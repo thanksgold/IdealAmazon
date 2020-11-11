@@ -1,35 +1,34 @@
-#include <vector>
-#include <iostream>
-#include <cmath>
+#include "tsp.h"
+#include <fstream>
 
-#define V std::vector
-
-struct ReturnPath {
-    int length;
-    V<int> path;
-    // constructor for ReturnPath struct
-    ReturnPath(int length_, V<int> path_) {
-        length = length_;
-        path = path_;
-    }
+float TSP::degToRad(float x) {
+    return x * M_PI / 180;
+};
+float TSP::radToDeg(float x) {
+    return x * 180 / M_PI;
 };
 
-struct Point {
-    double x, y;
-    // constructor for Point struct
-    Point(double x_, double y_) {
-        x = x_;
-        y = y_;
-    }
-};
-
-double euclideanDistance(Point p1, Point p2) {
-    double x = p1.x - p2.x;
-    double y = p1.y - p2.y;
-    return sqrt(x*x + y*y);
+float TSP::euclideanDistance(Point p1, Point p2) {
+    float lat = sin(degToRad(p1.lat - p2.lat)/2);
+    float lon = sin(degToRad(p1.lon - p2.lon)/2);
+    // calculating using 'Haversine' formula
+    return 2.0 * earthRadius * asin(sqrt(lat*lat + 
+        cos(degToRad(p1.lat)) * cos(degToRad(p2.lat)) * lon*lon));
 }
 
-int printV(V<V<ReturnPath>> A) {
+V<V<float>> TSP::calculateEuclidean(V<Point> data) {
+    int size = data.size();
+    V<V<float>> rtn(size, V<float>(size, 0));
+    for (int i = 0; i < size; ++i) {
+        for (int j = i+1; j < size; ++j) {
+            rtn[i][j] = euclideanDistance(data[i], data[j]);
+            rtn[j][i] = rtn[i][j];
+        }
+    }
+    return rtn;
+}
+
+int TSP::printV(V<V<ReturnPath>> A) {
     std::cout << "\n";
     for (auto r : A) {
         std::cout << "{ ";
@@ -46,7 +45,7 @@ int printV(V<V<ReturnPath>> A) {
     }
 }
 
-int print(ReturnPath rtn) {
+int TSP::print(ReturnPath rtn) {
     std::cout << "shortest distance for { ";
     for (auto r : rtn.path) {
             std::cout << r << " ";
@@ -54,12 +53,12 @@ int print(ReturnPath rtn) {
     std::cout << "} is " << rtn.length << "\n";
 }
 
-ReturnPath tsp(const V<V<int>>& distances, int position, int visited, V<V<ReturnPath>>& state) {
+ReturnPath TSP::tsp(const V<V<float>>& distances, int position, int visited, V<V<ReturnPath>>& state) {
     // if reached the end point then return the distance to the first
     if (visited == ((1 << distances.size()) - 1))
-        return ReturnPath(distances[position][0], V<int>(1,distances[position][0]));
+        return ReturnPath(distances[position][0], V<int>(1, position)); // distances[position][0]));
     // if it has already been calculated, then use that
-    if (state[position][visited].length != INT_MAX)
+    if (state[position][visited].length != __FLT_MAX__)
         return state[position][visited];
     for (int i = 0; i < distances.size(); ++i) {
         if(i == position || (visited & (1 << i)))
@@ -71,7 +70,7 @@ ReturnPath tsp(const V<V<int>>& distances, int position, int visited, V<V<Return
             state[position][visited].length = distances[position][i] + r.length;
             if (!state[position][visited].path.empty())
                 state[position][visited].path.clear();
-            state[position][visited].path.push_back(distances[position][i]);
+            state[position][visited].path.push_back(position); //distances[position][i]);
             for (int j = 0; j < r.path.size(); ++j)
                 state[position][visited].path.push_back(r.path[j]);
         }
@@ -79,26 +78,56 @@ ReturnPath tsp(const V<V<int>>& distances, int position, int visited, V<V<Return
     return state[position][visited];
 }
 
+int printV1(V<V<float>> A) {
+    std::cout << "\n";
+    for (auto r : A) {
+        std::cout << "{ ";
+        for (auto c : r) {
+            std::cout << c << " ";
+        }
+        std::cout << "}\n";
+    }
+}
+
 int main() {
-    V<V<int>> distances = { { 0, 10, 15, 20 },
-                            { 10, 0, 35, 25 },
-                            { 15, 35, 0, 30 },
-                            { 20, 25, 30, 0 } };
+    TSP tsp;
 
-    V<V<int>> distances2 = { { 0, 20, 42, 35 },
-                             { 20, 0, 30, 34 },
-                             { 42, 30, 0, 12 },
-                             { 35, 34, 12, 0 }
-                            };
+    V<Point> points = { Point(-35.282001, 149.128998, "Canberra"),
+                        Point(-33.865143, 151.209900, "Sydney"),
+                        Point(-37.840935, 144.946457, "Melbourne"),
+                        Point(-27.470125, 153.021072, "Brisbane"),
+                        Point(-31.953512, 115.857048, "Perth"),
+                        Point(-34.921230, 138.599503, "Adelaide"),
+                        Point(-42.880554, 147.324997, "Hobart"),
+                        Point(-12.462827, 130.841782, "Darwin"),
+                       };
 
-    V<ReturnPath> type = V<ReturnPath>((1 << distances.size()) - 1, ReturnPath(INT_MAX, V<int>()));
+    V<V<float>> distances = tsp.calculateEuclidean(points);
+    printV1(distances);
+
+    V<V<float>> distances2 = { { 0, 20, 42, 35 },
+                               { 20, 0, 30, 34 },
+                               { 42, 30, 0, 12 },
+                               { 35, 34, 12, 0 }
+                             };
+
+    V<ReturnPath> type = V<ReturnPath>((1 << distances.size()) - 1, ReturnPath(__FLT_MAX__, V<int>()));
     V<V<ReturnPath>> state(distances.size(), type);
 
-    ReturnPath r = tsp(distances, 0, 1, state);
+    ReturnPath r = tsp.tsp(distances, 0, 1, state);
+    r.path.push_back(r.path[0]);
+    tsp.print(r);
 
-    print(r);
-
-    // std::cout << "euclidean:" << euclideanDistance(Point(0, 0), Point(12, 16));
+    // Create an output filestream object
+    std::ofstream output("output.csv");    
+    // Send data to the stream
+    output << "Latitude,Longitude,Name\n";
+    for (int i = 0; i < r.path.size(); ++i) {
+        output << points[r.path[i]].lat << "," << points[r.path[i]].lon 
+            << "," << points[r.path[i]].name << "\n";
+    }
+    // Close the file
+    output.close();
 
     return 0;
 }
