@@ -48,8 +48,15 @@ int main(int argc, char *argv[]) {
         std::cout << "\nPrinting the order results in the descending order \n\n";
         while (!heap.is_empty()) {
             HeapData d = heap.extractMax();
-            std::cout << rbtree.search(d.key, d.quantity, d.name);
-        }
+
+            int r = rbtree.search(d.key, d.quantity);
+            if (r==0)
+                std::cout << "Yo " + d.name + ", your order is not found. Sorry, IdealAmazon\n";
+            else if (r==2)
+                std::cout << "Yo " + d.name + ", your order is on the way! Cheers, IdealAmazon\n";
+            else
+                std::cout << "Yo " + d.name + ", not enough quantity available for your order :( Apologies, IdealAmazon\n";
+            }
         std::cout << "\n";
 
         TSP tsp;

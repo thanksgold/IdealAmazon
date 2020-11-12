@@ -34,13 +34,13 @@ class RBTree {
         void rightRotate(N x);
         void RBInsertFix(N z);
         int searchTree(N node, int key, int quantity);
-        void printTree(N node, std::string indent, bool last);
+        void printTree(N node, std::string indent, bool last); // wiil be removed
     public:
         RBTree() {
             nil = new Node;
             root = nil;
         }
         void RBInsert(RBData data);
-        std::string search(int key, int quantity, std::string name);
-        void print();
+        int search(int key, int quantity);
+        void print(); // wiil be removed
 };

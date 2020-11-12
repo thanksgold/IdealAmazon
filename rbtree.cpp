@@ -67,27 +67,62 @@ void RBTree::RBInsertFix(N z) {
                 leftRotate(z->parent->parent);
             }
         }
-        if (z == root) {
+        if (z == root)
             break;
-        }
     }
     root->colour = BLACK;
+}
+
+void RBTree::RBInsert(RBData data) {
+    // This is extra initialization required
+    N z = new Node(data);
+    z->left = nil;
+    z->right = nil;
+    // textbook pseudo code implementation
+    N y = NULL;
+    N x = root;
+    while (x != nil) {
+        y = x;
+        if (z->data.key < x->data.key)
+            x = x->left;
+        else
+            x = x->right;
+    }
+    z->parent = y;
+    if (y == NULL)
+        root = z;
+    else if (z->data.key < y->data.key)
+        y->left = z;
+    else
+        y->right = z;
+    if (z->parent == NULL) {
+        z->colour = BLACK;
+        return;
+    }
+    if (z->parent->parent == NULL)
+        return;
+    RBInsertFix(z);
 }
 
 int RBTree::searchTree(N node, int key, int quantity) {
     if (node == NULL)
         return 0;
     if (node->data.key == key) {
-        if (node->data.quantity >= quantity) {
-            node->data.quantity -= quantity;
-            return 2;
-        }
-        return 1;
+        if (node->data.quantity < quantity)
+            return 1;
+        node->data.quantity -= quantity;
+        return 2;
     }
     if (node->data.key > key)
         return searchTree(node->left, key, quantity);
     return searchTree(node->right, key, quantity);
 }
+
+int RBTree::search(int key, int quantity) {
+    if (quantity <= 0)
+        throw std::invalid_argument("not valid quantity");
+    return searchTree(root, key, quantity);
+};
 
 void RBTree::printTree(N node, std::string indent, bool last) {
     if (node != nil) {
@@ -106,51 +141,6 @@ void RBTree::printTree(N node, std::string indent, bool last) {
         printTree(node->right, indent, true);
     }
 }
-
-void RBTree::RBInsert(RBData data) { 
-    N z = new Node(data);
-    z->left = nil;
-    z->right = nil;
-
-    N y = NULL;
-    N x = root;
-
-    while (x != nil) {
-        y = x;
-        if (z->data.key < x->data.key)
-            x = x->left;
-        else
-            x = x->right;
-    }
-    z->parent = y;
-    if (y == NULL)
-        root = z;
-    else if (z->data.key < y->data.key)
-        y->left = z;
-    else
-        y->right = z;
-    
-    if (z->parent == NULL){
-        z->colour = BLACK;
-        return;
-    }
-
-    if (z->parent->parent == NULL)
-        return;
-    
-    RBInsertFix(z);
-}
-
-std::string RBTree::search(int key, int quantity, std::string name) {
-    if (quantity <= 0)
-        throw std::invalid_argument("not valid quantity");
-    int r = searchTree(root, key, quantity);
-    if (r==0)
-        return "Yo " + name + ", your order is not found. Sorry, IdealAmazon\n";
-    else if (r==2)
-        return "Yo " + name + ", your order is on the way! Cheers, IdealAmazon\n";
-    return "Yo " + name + ", not enough quantity available for your order :( Apologies, IdealAmazon\n";
-};
 
 void RBTree::print() {
     printTree(root, "", true);
