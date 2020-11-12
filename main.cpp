@@ -3,18 +3,16 @@
 #include "maxheap.h"
 #include "tsp.h"
 
-using namespace std;
-
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        cout << "Please supply the input files for max heap and red black tree\n";
+        std::cout << "Please supply the input files for max heap and red black tree\n";
     } 
     else {
 		// Read red black tree input
         int n, key, x, y, quantity;
-		ifstream rbData(argv[1]);
+		std::ifstream rbData(argv[1]);
 		rbData >> n;
-        vector<RBData> rb;
+        V<RBData> rb;
 		for (int i = 0; i < n; i++) {
 			rbData >> key >> x >> y >> quantity;
             rb.push_back({key, x, y, quantity});
@@ -27,15 +25,15 @@ int main(int argc, char *argv[]) {
             rbtree.RBInsert(rb.at(i));
         }
         rb.clear(); // to free up the memory
-        cout << "Printing the red black tree nodes\n\n";
+        std::cout << "Printing the red black tree nodes\n\n";
         rbtree.print();
         
         // Read heap input
-		ifstream heapData(argv[2]);
+		std::ifstream heapData(argv[2]);
 		int priority;
-        string name;
+        std::string name;
 		heapData >> n;
-        vector<HeapData> h;
+        V<HeapData> h;
 		for (int i = 0; i < n; i++) {
 			heapData >> priority >> key >> quantity >> name >> x >> y;
 			// Store requests (heap tree)           
@@ -47,12 +45,12 @@ int main(int argc, char *argv[]) {
         Heap heap;
         heap.buildMaxHeap(h);
         h.clear(); // to free up the memory
-        cout << "\nPrinting the order results in the descending order \n\n";
+        std::cout << "\nPrinting the order results in the descending order \n\n";
         while (!heap.is_empty()) {
             HeapData d = heap.extractMax();
-            cout << rbtree.search(d.key, d.quantity, d.name);
+            std::cout << rbtree.search(d.key, d.quantity, d.name);
         }
-        cout << "\n";
+        std::cout << "\n";
 
         TSP tsp;
 
