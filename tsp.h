@@ -29,13 +29,15 @@ struct Point {
 
 class TSP {
     private:
+        V<ReturnPath> type;
+        V<V<ReturnPath>> state;
         float degToRad(float x);
         float radToDeg(float x);
         float euclideanDistance(Point p1, Point p2);
-    public:
-        TSP() {}
         V<V<float>> calculateEuclidean(V<Point> data);
         ReturnPath tsp(const V<V<float>>& distances, int position, int visited, V<V<ReturnPath>>& state);
-        int printV(V<V<ReturnPath>> A);
+    public:
+        TSP() {}
         int print(ReturnPath rtn);
+        ReturnPath solveTSP(V<Point> points);
 };

@@ -41,7 +41,7 @@ HeapData Heap::extractMax() {
     return max;
 }
 
-void Heap::buildMaxHeap(vector<HeapData> B) {
+void Heap::buildMaxHeap(std::vector<HeapData> B) {
     A.insert(A.end(), B.begin(), B.end());
     for (int i = i >> 1; i > 0; i--)
         maxHeapify(i);

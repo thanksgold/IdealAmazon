@@ -1,5 +1,4 @@
 #include "tsp.h"
-#include <fstream>
 
 float TSP::degToRad(float x) {
     return x * M_PI / 180;
@@ -28,31 +27,6 @@ V<V<float>> TSP::calculateEuclidean(V<Point> data) {
     return rtn;
 }
 
-int TSP::printV(V<V<ReturnPath>> A) {
-    std::cout << "\n";
-    for (auto r : A) {
-        std::cout << "{ ";
-        for (auto c : r) {
-            std::cout << "{ ";
-            for (auto z : c.path)
-                std::cout << z << " ";
-            if (c.length == INT_MAX)
-                std::cout << "}max ";
-            else
-                std::cout << "}" << c.length << " ";
-        }
-        std::cout << "}\n";
-    }
-}
-
-int TSP::print(ReturnPath rtn) {
-    std::cout << "shortest distance for { ";
-    for (auto r : rtn.path) {
-            std::cout << r << " ";
-    }
-    std::cout << "} is " << rtn.length << "\n";
-}
-
 ReturnPath TSP::tsp(const V<V<float>>& distances, int position, int visited, V<V<ReturnPath>>& state) {
     // if reached the end point then return the distance to the first
     if (visited == ((1 << distances.size()) - 1))
@@ -78,56 +52,20 @@ ReturnPath TSP::tsp(const V<V<float>>& distances, int position, int visited, V<V
     return state[position][visited];
 }
 
-int printV1(V<V<float>> A) {
-    std::cout << "\n";
-    for (auto r : A) {
-        std::cout << "{ ";
-        for (auto c : r) {
-            std::cout << c << " ";
-        }
-        std::cout << "}\n";
+int TSP::print(ReturnPath rtn) {
+    std::cout << "shortest distance for { ";
+    for (auto r : rtn.path) {
+            std::cout << r << " ";
     }
+    std::cout << "} is " << rtn.length << "\n";
 }
 
-int main() {
-    TSP tsp;
-
-    V<Point> points = { Point(-35.282001, 149.128998, "Canberra"),
-                        Point(-33.865143, 151.209900, "Sydney"),
-                        Point(-37.840935, 144.946457, "Melbourne"),
-                        Point(-27.470125, 153.021072, "Brisbane"),
-                        Point(-31.953512, 115.857048, "Perth"),
-                        Point(-34.921230, 138.599503, "Adelaide"),
-                        Point(-42.880554, 147.324997, "Hobart"),
-                        Point(-12.462827, 130.841782, "Darwin"),
-                       };
-
-    V<V<float>> distances = tsp.calculateEuclidean(points);
-    printV1(distances);
-
-    V<V<float>> distances2 = { { 0, 20, 42, 35 },
-                               { 20, 0, 30, 34 },
-                               { 42, 30, 0, 12 },
-                               { 35, 34, 12, 0 }
-                             };
-
-    V<ReturnPath> type = V<ReturnPath>((1 << distances.size()) - 1, ReturnPath(__FLT_MAX__, V<int>()));
-    V<V<ReturnPath>> state(distances.size(), type);
-
-    ReturnPath r = tsp.tsp(distances, 0, 1, state);
-    r.path.push_back(r.path[0]);
-    tsp.print(r);
-
-    // Create an output filestream object
-    std::ofstream output("output.csv");    
-    // Send data to the stream
-    output << "Latitude,Longitude,Name\n";
-    for (int i = 0; i < r.path.size(); ++i) {
-        output << points[r.path[i]].lat << "," << points[r.path[i]].lon 
-            << "," << points[r.path[i]].name << "\n";
-    }
-    // Close the file
-    output.close();
-
-    return 0;
+ReturnPath TSP::solveTSP(V<Point> points) {
+    type = V<ReturnPath>((1 << points.size()) - 1, ReturnPath(__FLT_MAX__, V<int>()));
+    state = V<V<ReturnPath>>(points.size(), type);
+    V<V<float>> distances = calculateEuclidean(points);
+    ReturnPath rtn = tsp(distances, 0, 1, state);
+    rtn.path.push_back(rtn.path[0]);
+    print(rtn);
+    return rtn;
 }
