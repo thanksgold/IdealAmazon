@@ -52,7 +52,7 @@ ReturnPath TSP::tsp(const V<V<float>>& distances, int position, int visited, V<V
     return state[position][visited];
 }
 
-int TSP::print(ReturnPath rtn) {
+void TSP::print(ReturnPath rtn) {
     std::cout << "shortest distance for { ";
     for (auto r : rtn.path) {
             std::cout << r << " ";

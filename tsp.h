@@ -38,6 +38,6 @@ class TSP {
         ReturnPath tsp(const V<V<float>>& distances, int position, int visited, V<V<ReturnPath>>& state);
     public:
         TSP() {}
-        int print(ReturnPath rtn);
+        void print(ReturnPath rtn);
         ReturnPath solveTSP(V<Point> points);
 };
