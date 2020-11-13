@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
                         heap.buildMaxHeap(h);
                         h.clear(); // to free up the memory
                         std::cout << "\nPrinting the order results in the descending order \n\n";
-                        while (!heap.is_empty()) {
+                        while (!heap.isEmpty()) {
                             HeapData d = heap.extractMax();
 
                             int r = rbtree.search(d.key, d.quantity);
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
                     heap.buildMaxHeap(h);
                     h.clear(); // to free up the memory
                     std::cout << "\nPrinting the order results in the descending order \n\n";
-                    while (!heap.is_empty()) {
+                    while (!heap.isEmpty()) {
                         HeapData d = heap.extractMax();
 
                         int r = rbtree.search(d.key, d.quantity);

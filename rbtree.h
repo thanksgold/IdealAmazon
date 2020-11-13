@@ -34,7 +34,7 @@ class RBTree {
         void rightRotate(N x);
         void RBInsertFix(N z);
         int searchTree(N node, int key, int quantity);
-        void printTree(N node, std::string indent, bool last); // wiil be removed
+        void printTree(N node, std::string indent, bool last);
     public:
         RBTree() {
             nil = new Node;
@@ -42,5 +42,5 @@ class RBTree {
         }
         void RBInsert(RBData data);
         int search(int key, int quantity);
-        void print(); // wiil be removed
+        void print();
 };

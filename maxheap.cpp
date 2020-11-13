@@ -15,18 +15,7 @@ void Heap::maxHeapify(int i) {
     }
 }
 
-void Heap::insertNode(HeapData data) {
-    int i = A.size();
-    A.push_back(data);
-    int p = i >> 1;
-    while (i > 1 && A.at(p).priority < A.at(i).priority) {
-        p = i >> 1;
-        std::swap(A.at(i), A.at(p));
-        i = p;
-    }
-}
-
-bool Heap::is_empty() {
+bool Heap::isEmpty() {
     return A.size() <= 1;
 }
 
