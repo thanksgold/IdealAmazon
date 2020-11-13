@@ -33,8 +33,8 @@ class TSP {
         V<V<ReturnPath>> state;
         float degToRad(float x);
         float radToDeg(float x);
-        float euclideanDistance(Point p1, Point p2);
-        V<V<float>> calculateEuclidean(V<Point> data);
+        float haversineDistance(Point p1, Point p2);
+        V<V<float>> calculateHaversine(V<Point> data);
         ReturnPath tsp(const V<V<float>>& distances, int position, int visited, V<V<ReturnPath>>& state);
     public:
         TSP() {}

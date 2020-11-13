@@ -2,7 +2,7 @@
 
 struct RBData {
     int key;
-    int x, y;
+    // int x, y;
     int quantity;
 };
 

@@ -1,4 +1,5 @@
 #include <fstream>
+#include <chrono>
 #include "rbtree.h"
 #include "maxheap.h"
 #include "tsp.h"
@@ -18,15 +19,16 @@ int main(int argc, char *argv[]) {
                 std::cout << "Input files are missing or run '$fileName --help' to see options\n";
             else {
                 // initialize the functionalities and variables
-                RBTree rbtree;
                 Heap heap;
                 TSP tsp;
-                int n, key, x, y, quantity;
 
                 if (std::string("-a").compare(argv[1]) == 0) {
                     if (argc < 4)
                         std::cout << "rbTest mxTest files are missing or run '$fileName --help' to see options\n";
                     else {
+                        RBTree rbtree;
+                        int n, key, x, y, quantity;
+
                         std::cout << "Reading -a: " << argv[2] << ", " << argv[3] << "\n";
                         // Read red black tree input
                         std::ifstream rbData(argv[2]);
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]) {
                         V<RBData> rb;
                         for (int i = 0; i < n; i++) {
                             rbData >> key >> x >> y >> quantity;
-                            rb.push_back({key, x, y, quantity});
+                            rb.push_back({key, quantity}); // rb.push_back({key, x, y, quantity});
                         }
                         rbData.close();
 
@@ -76,9 +78,6 @@ int main(int argc, char *argv[]) {
                         }
                         std::cout << "\n";
 
-                        std::cout << argv[3] << "\n";
-
-
                         V<Point> points = { Point(-35.282001, 149.128998, "Canberra"),
                                             Point(-33.865143, 151.209900, "Sydney"),
                                             Point(-37.840935, 144.946457, "Melbourne"),
@@ -90,9 +89,10 @@ int main(int argc, char *argv[]) {
                                         };
 
                         ReturnPath r = tsp.solveTSP(points);
+                        tsp.print(r);
 
                         // Create an output filestream object
-                        std::ofstream output("output.csv");    
+                        std::ofstream output("testVisualization/output.csv");    
                         // Send data to the stream
                         output << "Latitude,Longitude,Name\n";
                         for (int i = 0; i < r.path.size(); ++i) {
@@ -104,24 +104,51 @@ int main(int argc, char *argv[]) {
                     }
                 } else if (std::string("-rb").compare(argv[1]) == 0) {
                     std::cout << "Reading -rb: " << argv[2] << "\n";
-                    // Read red black tree input
-                    std::ifstream rbData(argv[2]);
-                    rbData >> n;
-                    V<RBData> rb;
-                    for (int i = 0; i < n; i++) {
-                        rbData >> key >> x >> y >> quantity;
-                        rb.push_back({key, x, y, quantity});
-                    }
-                    rbData.close();
 
-                    // print
+                    // initialize variables
+                    RBTree rbtree;
+                    int n, key, quantity;
+                    float lat, lon;
+                    V<RBData> rb;
+
+                    // Read red black tree input
+                    std::ifstream data(argv[2]);
+                    data >> n >> lat >> lon;
                     for (int i = 0; i < n; i++) {
-                        rbtree.RBInsert(rb.at(i));
+                        data >> key >> quantity;
+                        rb.push_back({key, quantity});
                     }
+                    data.close();
+
+                    // insert all elements into the data structure
+                    for (int i = 0; i < n; i++)
+                        rbtree.RBInsert(rb.at(i));
                     rb.clear(); // to free up the memory
-                    std::cout << "Printing the red black tree nodes\n\n";
+
+                    // print out to check correctness
+                    std::cout << "Printing the red black tree nodes...\n";
                     rbtree.print();
+
+                    // tell that the execution is finished
+                    std::cout << "Finished execution!\n\n";
                 } else if (std::string("-mx").compare(argv[1]) == 0) {
+                    int n, key, x, y, quantity;
+                    RBTree rbtree;
+
+                    // auto start = std::chrono::high_resolution_clock::now();
+                    // // for (int i = 0; i < n; i++)
+                    // //     rbtree.search(rb.at(i).key, rb.at(i).quantity/10+1);
+                    // auto finish = std::chrono::high_resolution_clock::now();
+                    // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count();
+                    // for (int i = 0; i < 10; ++i) {
+                    //     start = std::chrono::high_resolution_clock::now();
+                    //     for (int i = 0; i < n; i++)
+                    //         rbtree.search(rb.at(i).key, rb.at(i).quantity/10+1);
+                    //     finish = std::chrono::high_resolution_clock::now();
+                    //     duration += std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count();
+                    // }
+                    // std::cout << "It took " << duration/10 << " microseconds to insert nodes...\n";
+
                     std::cout << "Reading -mx: " << argv[2] << "\n";
                     // Read heap input
                     std::ifstream heapData(argv[2]);
@@ -165,9 +192,10 @@ int main(int argc, char *argv[]) {
                                     };
 
                     ReturnPath r = tsp.solveTSP(points);
+                    tsp.print(r);
 
                     // Create an output filestream object
-                    std::ofstream output("output.csv");    
+                    std::ofstream output("testVisualization/output.csv");    
                     // Send data to the stream
                     output << "Latitude,Longitude,Name\n";
                     for (int i = 0; i < r.path.size(); ++i) {

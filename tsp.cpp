@@ -7,7 +7,7 @@ float TSP::radToDeg(float x) {
     return x * 180 / M_PI;
 };
 
-float TSP::euclideanDistance(Point p1, Point p2) {
+float TSP::haversineDistance(Point p1, Point p2) {
     float lat = sin(degToRad(p1.lat - p2.lat)/2);
     float lon = sin(degToRad(p1.lon - p2.lon)/2);
     // calculating using 'Haversine' formula
@@ -15,12 +15,12 @@ float TSP::euclideanDistance(Point p1, Point p2) {
         cos(degToRad(p1.lat)) * cos(degToRad(p2.lat)) * lon*lon));
 }
 
-V<V<float>> TSP::calculateEuclidean(V<Point> data) {
+V<V<float>> TSP::calculateHaversine(V<Point> data) {
     int size = data.size();
     V<V<float>> rtn(size, V<float>(size, 0));
     for (int i = 0; i < size; ++i) {
         for (int j = i+1; j < size; ++j) {
-            rtn[i][j] = euclideanDistance(data[i], data[j]);
+            rtn[i][j] = haversineDistance(data[i], data[j]);
             rtn[j][i] = rtn[i][j];
         }
     }
@@ -53,19 +53,18 @@ ReturnPath TSP::tsp(const V<V<float>>& distances, int position, int visited, V<V
 }
 
 void TSP::print(ReturnPath rtn) {
-    std::cout << "shortest distance for { ";
+    std::cout << "The shortest distance for point indexes { ";
     for (auto r : rtn.path) {
             std::cout << r << " ";
     }
-    std::cout << "} is " << rtn.length << "\n";
+    std::cout << "} is " << rtn.length << " km!\n";
 }
 
 ReturnPath TSP::solveTSP(V<Point> points) {
+    V<V<float>> distances = calculateHaversine(points);
     type = V<ReturnPath>((1 << points.size()) - 1, ReturnPath(__FLT_MAX__, V<int>()));
     state = V<V<ReturnPath>>(points.size(), type);
-    V<V<float>> distances = calculateEuclidean(points);
     ReturnPath rtn = tsp(distances, 0, 1, state);
     rtn.path.push_back(rtn.path[0]);
-    print(rtn);
     return rtn;
 }
