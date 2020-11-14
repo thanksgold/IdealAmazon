@@ -1,4 +1,4 @@
 #!/bin/sh
 
 g++ -std=c++11 main.cpp rbtree.cpp maxheap.cpp tsp.cpp -o final
-./final.exe -a ./testCases/rbSimple.txt ./testCases/heapSimple.txt
+./final.exe -a ./testCases/rb5000.txt ./testCases/mxACT100000.txt

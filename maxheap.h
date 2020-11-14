@@ -6,8 +6,8 @@ struct HeapData {
     int key;
     int quantity;
     std::string name;
-    int x, y;
-    // int index;
+    float x, y;
+    int index;
 };
 
 class Heap {

@@ -1,0 +1,21 @@
+20
+-26.107 151.629 Abbeywood
+-24.844 152.025 Abbotsford
+-25.137 151.129 Abercorn
+-18.475 145.886 Abergowrie
+-17.8 143.44 Abingdon
+-25.203 152.329 Abington
+-27.59 153.028 Acacia
+-27.304 151.691 Acland
+-27.522 152.287 Adare
+-25.912 144.701 Adavale
+-23.115 150.697 Adelaide
+-28.033 153.28 Advancetown
+-16.884 145.747 Aeroglen
+-24.213 151.903 Agnes
+-19.547 147.444 Airdmillan
+-20.268 148.716 Airlie
+-19.654 147.337 Airville
+-19.298 146.764 Aitkenvale
+-20.083 146.249 Alabama
+-27.346 152.968 Albany
